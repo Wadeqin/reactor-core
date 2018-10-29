@@ -874,7 +874,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * fastest of these competing sources.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/firstVarSourcesForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/firstForFlux.svg" alt="">
 	 *
 	 * @param sources The competing source publishers
 	 * @param <I> The type of values in both source and output sequences
@@ -892,7 +892,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * fastest of these competing sources.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/firstIterableSourcesForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/firstForFlux.svg" alt="">
 	 *
 	 * @param sources The competing source publishers
 	 * @param <I> The type of values in both source and output sequences
@@ -1012,7 +1012,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * Programmatically create a {@link Flux} by generating signals one-by-one via a
 	 * consumer callback.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/generateWithSink.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/generateStateless.svg" alt="">
 	 *
 	 * @param <T> the value type emitted
 	 * @param generator Consume the {@link SynchronousSink} provided per-subscriber by Reactor
@@ -1256,7 +1256,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * sources are subscribed to eagerly.
 	 * A new {@link Iterator} will be created for each subscriber.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/mergeIterableSources.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/mergeFixedSources.svg" alt="">
 	 * <p>
 	 * Note that merge is tailored to work with asynchronous sources or finite sources. When dealing with
 	 * an infinite source that doesn't already publish on a dedicated Scheduler, you must isolate that source
@@ -1529,7 +1529,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * into an ordered merged sequence. Unlike concat, sources are subscribed to
 	 * eagerly. Unlike merge, their emitted values are merged into the final sequence in subscription order.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/mergeSequentialIterableSources.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/mergeSequentialVarSources.svg" alt="">
 	 *
 	 * @param sources an {@link Iterable} of {@link Publisher} sequences to merge
 	 * @param <I> the merged type
@@ -1547,7 +1547,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * eagerly (but at most {@code maxConcurrency} sources at a time). Unlike merge, their
 	 * emitted values are merged into the final sequence in subscription order.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/mergeSequentialIterableSources.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/mergeSequentialVarSources.svg" alt="">
 	 *
 	 * @param sources an {@link Iterable} of {@link Publisher} sequences to merge
 	 * @param maxConcurrency the request produced to the main source thus limiting concurrent merge backlog
@@ -1569,7 +1569,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * This variant will delay any error until after the rest of the mergeSequential backlog
 	 * has been processed.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/mergeSequentialIterableSources.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/mergeSequentialVarSources.svg" alt="">
 	 *
 	 * @param sources an {@link Iterable} of {@link Publisher} sequences to merge
 	 * @param maxConcurrency the request produced to the main source thus limiting concurrent merge backlog
@@ -1645,7 +1645,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * the source (source has completed) and the last mirrored {@link Publisher} has also
 	 * completed.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/switchOnNextWithPrefetch.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/switchOnNext.svg" alt="">
 	 *
 	 * @param mergedPublishers The {@link Publisher} of {@link Publisher} to switch on and mirror.
 	 * @param prefetch the inner source request size
@@ -1667,7 +1667,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * Eager resource cleanup happens just before the source termination and exceptions raised by the cleanup Consumer
 	 * may override the terminal even.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/usingWithCleanupForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/usingForFlux.svg" alt="">
 	 * <p>
 	 * For an asynchronous version of the cleanup, with distinct path for onComplete, onError
 	 * and cancel terminations, see {@link #usingWhen(Publisher, Function, Function, Function, Function)}.
@@ -1695,7 +1695,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * <ul> <li>Eager resource cleanup happens just before the source termination and exceptions raised by the cleanup
 	 * Consumer may override the terminal even.</li> <li>Non-eager cleanup will drop any exception.</li> </ul>
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/usingWithCleanupAndEagerForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/usingForFlux.svg" alt="">
 	 * <p>
 	 * For an asynchronous version of the cleanup, with distinct path for onComplete, onError
 	 * and cancel terminations, see {@link #usingWhen(Publisher, Function, Function, Function, Function)}.
@@ -1736,7 +1736,16 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * cleanup is invoked).
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/usingWhenWithAsyncCompleteAndErrorForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/usingWhenSuccessForFlux.svg" alt="">
+	 * <p>
+	 * <img class="marble" src="doc-files/marbles/usingWhenFailureForFlux.svg" alt="">
+	 * <p>
+	 * Additionally, the terminal signal is replaced by any error that might have happened
+	 * in the terminating {@link Publisher}:
+	 * <img class="marble" src="doc-files/marbles/usingWhenCleanupErrorForFlux.svg" alt="">
+	 * <p>
+	 * Finally, early cancellations will cancel the resource supplying {@link Publisher}:
+	 * <img class="marble" src="doc-files/marbles/usingWhenEarlyCancelForFlux.svg" alt="">
 	 *
 	 * @param resourceSupplier a {@link Publisher} that "generates" the resource,
 	 * subscribed for each subscription to the main sequence
@@ -1775,7 +1784,16 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * cleanup is invoked).
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/usingWhenAllForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/usingWhenSuccessForFlux.svg" alt="">
+	 * <p>
+	 * <img class="marble" src="doc-files/marbles/usingWhenFailureForFlux.svg" alt="">
+	 * <p>
+	 * Additionally, the terminal signal is replaced by any error that might have happened
+	 * in the terminating {@link Publisher}:
+	 * <img class="marble" src="doc-files/marbles/usingWhenCleanupErrorForFlux.svg" alt="">
+	 * <p>
+	 * Finally, early cancellations will cancel the resource supplying {@link Publisher}:
+	 * <img class="marble" src="doc-files/marbles/usingWhenEarlyCancelForFlux.svg" alt="">
 	 *
 	 * @param resourceSupplier a {@link Publisher} that "generates" the resource,
 	 * subscribed for each subscription to the main sequence
@@ -1817,7 +1835,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * cleanup is invoked).
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/usingWhenWithAsyncCleanupForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/usingWhenSuccessForFlux.svg" alt="">
 	 *
 	 * @param resourceSupplier a {@link Publisher} that "generates" the resource,
 	 * subscribed for each subscription to the main sequence
@@ -2112,7 +2130,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * The {@link Iterable#iterator()} will be called on each {@link Publisher#subscribe(Subscriber)}.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/zipIterableSourcesAndPrefetchForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/zipIterableSourcesForFlux.svg" alt="">
 	 *
 	 * @param sources the {@link Iterable} providing sources to zip
 	 * @param prefetch the inner source request size
@@ -2140,7 +2158,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * Errors will immediately be forwarded.
 	 * This "Step-Merge" processing is especially useful in Scatter-Gather scenarios.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/zipVarSourcesWithZipperForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/zipIterableSourcesForFlux.svg" alt="">
 	 *
 	 * @param combinator The aggregate function that will receive a unique value from each upstream and return the
 	 * value to signal downstream
@@ -2164,7 +2182,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * Errors will immediately be forwarded.
 	 * This "Step-Merge" processing is especially useful in Scatter-Gather scenarios.
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/zipVarSourcesWithZipperAndPrefetchForFlux.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/zipIterableSourcesForFlux.svg" alt="">
 	 *
 	 * @param combinator The aggregate function that will receive a unique value from each upstream and return the
 	 * value to signal downstream
@@ -2793,9 +2811,9 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * companion {@link Publisher} emits. Each buffer will last until the corresponding
 	 * closing companion {@link Publisher} emits, thus releasing the buffer to the resulting {@link Flux}.
 	 * <p>
-	 * When Open signal is strictly not overlapping Close signal : dropping buffers
+	 * When Open signal is strictly not overlapping Close signal : dropping buffers (see green marbles in diagram below).
 	 * <p>
-	 * When Open signal is strictly more frequent than Close signal : overlapping buffers
+	 * When Open signal is strictly more frequent than Close signal : overlapping buffers (see second and third buffers in diagram below).
 	 * <p>
 	 * When Open signal is exactly coordinated with Close signal : exact buffers
 	 * <p>
@@ -2824,11 +2842,9 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * companion {@link Publisher} emits. Each buffer will last until the corresponding
 	 * closing companion {@link Publisher} emits, thus releasing the buffer to the resulting {@link Flux}.
 	 * <p>
-	 * When Open signal is strictly not overlapping Close signal : dropping buffers
+	 * When Open signal is strictly not overlapping Close signal : dropping buffers (see green marbles in diagram below).
 	 * <p>
-	 * When Open signal is strictly more frequent than Close signal : overlapping buffers
-	 * <p>
-	 * When Open signal is exactly coordinated with Close signal : exact buffers
+	 * When Open signal is strictly more frequent than Close signal : overlapping buffers (see second and third buffers in diagram below).
 	 * <p>
 	 * <img class="marble" src="doc-files/marbles/bufferWhenWithSupplier.svg" alt="">
 	 *
@@ -3411,7 +3427,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * allows to give an arbitrary prefetch size to the inner {@link Publisher}.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/concatMapWithPrefetch.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/concatMap.svg" alt="">
 	 *
 	 * @reactor.discard This operator discards elements it internally queued for backpressure upon cancellation.
 	 *
@@ -3488,7 +3504,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * The prefetch argument allows to give an arbitrary prefetch size to the inner {@link Publisher}.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/concatMapWithPrefetch.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/concatMap.svg" alt="">
 	 *
 	 * @reactor.discard This operator discards elements it internally queued for backpressure upon cancellation.
 	 *
@@ -3528,7 +3544,7 @@ public abstract class Flux<T> implements Publisher<T> {
 	 * The prefetch argument allows to give an arbitrary prefetch size to the inner {@link Publisher}.
 	 *
 	 * <p>
-	 * <img class="marble" src="doc-files/marbles/concatMapWithPrefetch.svg" alt="">
+	 * <img class="marble" src="doc-files/marbles/concatMap.svg" alt="">
 	 *
 	 * @reactor.discard This operator discards elements it internally queued for backpressure upon cancellation.
 	 *
